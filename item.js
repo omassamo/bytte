@@ -18,6 +18,9 @@ var id = getParameterByName('id');
 
 // var id = "rec8OXQJUYYnNZYVJ";
 
+
+var mapsKey = "AIzaSyCDgbDR36eO0ZsFnO6wtx1TejGmWqNogRY";
+
 $(document).ready(function() {
 
 	jQuery.ajax({
@@ -39,12 +42,21 @@ $(document).ready(function() {
   	$("#title").append(data.fields.name);
   	$("#description").append(data.fields.description);
   	if (data.fields.images !== undefined ) {
-      $("#images").append("<img class='img-responsive' src='" + data.fields.images[0].url + "'>");    
+      
+      // Show first image
+      // $("#images").append("<img class='img-responsive' src='" + data.fields.images[0].url + "'>");    
+
+      // Loop through and append all images
+      $.each( data.fields.images, function(i, val){
+      $("#images").append("<div class='col-md-3'><a data-toggle='lightbox'><img class='img-responsive' src='" + data.fields.images[i].url + "'></a></div>");
+      })
       }
       else {
         console.log('no images');
       };
+
   	$("#address").append(data.fields.address);
+    $("#map").append("<iframe src='//www.google.com/maps/embed/v1/place?q=" + data.fields.address + "&zoom=17&key=AIzaSyCDgbDR36eO0ZsFnO6wtx1TejGmWqNogRY'></iframe>");
   	$("#pick-up").append(data.fields.days + " mellem " + data.fields.timestart + " og " + data.fields.timeend );
   	$("#created").append(data.createdTime);
 
@@ -53,11 +65,10 @@ $(document).ready(function() {
         event.preventDefault();
         // alert("Huh");
         var email = data.fields.contactEmail;
-        console.log(email);
-        // var subject = 'Circle Around';
-        // var emailBody = 'Some blah';
-        window.location.href = 'mailto:' + email;
-        // 'mailto:' + email + '?subject=' + subject + '&body=' +   emailBody;
+        var subject = 'Jeg vil gerne hente ' + data.fields.name;
+        var emailBody = 'Hej. Jeg har set du gerne vil give ' + data.fields.name + ' væk. Den vil jeg meget gerne have. Jeg kommer indenfor det tidsrum du har angivet.';
+        window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' +  emailBody;
+        
       });
   });
 
